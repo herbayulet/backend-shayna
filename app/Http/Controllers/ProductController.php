@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Models\Product;
 use Illuminate\Http\Request;
-use App\Http\Requests\ProductRequest;
+// use App\Http\Requests\ProductRequest;
 
 use Illuminate\Support\Str;
 
@@ -40,8 +40,17 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductRequest $request)
+    public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|max:255',
+            'slug' => 'required|max:255',
+            'type' => 'required|max:255',
+            'description' => 'required',
+            'price' => 'required|integer',
+            'quantity' => 'required|integer'
+        ]);
+
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
 
