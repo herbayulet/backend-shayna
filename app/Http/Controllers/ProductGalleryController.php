@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductGalleryRequest;
 use App\Models\Models\Product;
+use App\Models\Models\ProductGallery;
 use Illuminate\Http\Request;
-// use App\Http\Requests\ProductRequest;
 
-// use Illuminate\Support\Str;
-
-class ProductController extends Controller
+class ProductGalleryController extends Controller
 {   
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    // jika ingin masuk ke product gallery terutama lihat barang harus login dahulu
+    // jika ingin masuk ke product gallery terutama lihat foto barang harus login dahulu
     public function __construct()
     {
         $this->middleware('auth');
@@ -28,10 +27,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $items = Product::all();
+        $items = ProductGallery::with('product')->get();
 
-        return view('pages.products.index') ->with([
-            'items' => $items
+        return view('pages.product-galleries.index')->with([
+            'items' =>$items
         ]);
     }
 
@@ -42,7 +41,11 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('pages.products.create');
+        $products = Product::all();
+
+        return view('pages.product-galleries.create')->with([
+            'products' => $products
+            ]);
     }
 
     /**
@@ -53,19 +56,18 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|max:255',
-            'type' => 'required|max:255',
-            'description' => 'required',
-            'price' => 'required|integer',
-            'quantity' => 'required|integer'
+        $request -> validate ([
+            'products_id' => 'required | integer | exists:products,id',
+            'photo' => 'required | image',
+            'is_default' => 'boolean'
         ]);
+            
+        $data = $request -> all();
+        $data['photo'] = $request->file('photo')->store(
+            'product', 'public');
 
-        $data = $request->all();
-        // $data['slug'] = Str::slug($request->name);
-
-        Product::create($data);
-        return redirect()->route('products.index');
+        ProductGallery::create($data);
+        return redirect()->route('product-galleries.index') ->with('success','Post updated successfully');
     }
 
     /**
@@ -87,11 +89,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $item = Product::findOrFail($id);
-
-        return view('pages.products.edit')->with([
-            'item' => $item
-        ]);
+        //
     }
 
     /**
@@ -103,20 +101,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|max:255',
-            'type' => 'required|max:255',
-            'description' => 'required',
-            'price' => 'required|integer',
-            'quantity' => 'required|integer'
-        ]);
-
-        $data = $request->all();
-        // $data['slug'] = Str::slug($request->name);
-        $item = Product::findOrFail($id);
-        $item->update($data);
-
-        return redirect()->route('products.index');
+        //
     }
 
     /**
@@ -127,9 +112,6 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $item = Product::findOrFail($id);
-        $item->delete();
-
-        return redirect()->route('products.index');
+        //
     }
 }
