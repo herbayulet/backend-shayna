@@ -20,13 +20,13 @@ class ProductGallery extends Model
 
     ];
 
-    public function product () {
+    public function products () {
         
         return $this->belongsTo(Product::class,'products_id', 'id');
 
     }
 
     public function getPhotoAttribute($value) {
-        return url('storage/' . $value);
+        return url('storage/' , $value);
     }
 }

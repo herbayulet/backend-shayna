@@ -10,17 +10,17 @@ class Product extends Model
 {
     use SoftDeletes;
 
-    protected $table ='products';
+    // protected $table ='products';
 
     protected $fillable = [
-        'name','type', 'description', 'price', 'quantity'
+        'name', 'type', 'description', 'price', 'quantity'
     ] ;
 
     protected $hidden = [
 
     ];
 
-    public function galleries () {
+    public function products_galleries () {
         
         return $this->hasMany(ProductGallery::class,'products_id');
 

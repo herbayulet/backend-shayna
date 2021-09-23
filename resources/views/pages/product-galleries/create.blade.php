@@ -13,7 +13,7 @@
                     <select name="products_id" 
                                 class="form-control @error('products_id') is-invalid @enderror">
                         @foreach ($products as $product)
-                            <option value="{{$product->id}}{{$product->name}}"></option>
+                            <option value="{{$product->id}}">{{$product->name}}</option>
                         @endforeach    
                     </select>
                     @error('products_id') <div class="text-muted">{{$message}}</div> @enderror
